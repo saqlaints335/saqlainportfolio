@@ -1,4 +1,4 @@
-import "./About.css";
+import "./about.css";
 import aboutImage from "../../assets/images/about.webp";
 
 const About = () => {
