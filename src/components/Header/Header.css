@@ -1,0 +1,383 @@
+/* ========================================
+   HEADER
+======================================== */
+
+.site-header {
+  width: 100%;
+  height: 90px; 
+
+  background: #020403;
+
+  position: sticky;
+  top: 0;
+  left: 0;
+
+  z-index: 9999;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.025);
+}
+
+.header-inner {
+  width: calc(100% - 80px);
+  max-width: 1280px;
+  height: 100%;
+
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+}
+
+
+/* ========================================
+   LOGO
+======================================== */
+
+.header-logo {
+  display: flex;
+  align-items: center;
+
+  flex-shrink: 0;
+
+  text-decoration: none;
+}
+
+.header-logo img {
+  width: 250px;
+  height: 60px;
+
+  object-fit: contain;
+  object-position: left center;
+
+  display: block;
+}
+
+
+/* ========================================
+   NAVIGATION
+======================================== */
+
+.header-nav {
+  margin-left: auto;
+
+  display: flex;
+  align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+
+  gap: 36px;
+}
+
+.nav-link {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+
+  padding: 26px 0;
+
+  color: #d8d8d8;
+
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+
+  text-decoration: none;
+
+  transition:
+    color 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.nav-link:hover {
+  color: #f4b800;
+}
+
+.nav-link.active {
+  color: #f4b800;
+}
+
+
+/* ========================================
+   DOWNLOAD CV
+======================================== */
+
+.cv-button {
+  height: 42px;
+
+  padding: 0 18px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  background: transparent;
+
+  border: 1px solid #8d6900;
+  border-radius: 6px;
+
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1;
+
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition:
+    color 0.25s ease,
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.desktop-cv-button {
+  margin-left: 72px;
+}
+
+.cv-button svg {
+  width: 17px;
+  height: 17px;
+
+  flex-shrink: 0;
+}
+
+.cv-button:hover {
+  color: #050505;
+
+  background: #f4b800;
+
+  border-color: #f4b800;
+
+  transform: translateY(-2px);
+}
+
+.mobile-cv-button {
+  display: none;
+}
+
+
+/* ========================================
+   HAMBURGER BUTTON
+======================================== */
+
+.menu-toggle {
+  width: 42px;
+  height: 42px;
+
+  margin-left: auto;
+
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  gap: 5px;
+
+  padding: 0;
+
+  border: 0;
+  outline: none;
+
+  background: transparent;
+
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  width: 25px;
+  height: 2px;
+
+  display: block;
+
+  background: #ffffff;
+
+  border-radius: 10px;
+
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.menu-toggle:hover span {
+  background: #f4b800;
+}
+
+
+/* Hamburger becomes X */
+
+.menu-toggle.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+
+/* ========================================
+   LAPTOP
+======================================== */
+
+@media (max-width: 1150px) {
+
+  .header-inner {
+    width: calc(100% - 50px);
+  }
+
+  .header-logo img {
+    width: 175px;
+  }
+
+  .nav-links {
+    gap: 25px;
+  }
+
+  .desktop-cv-button {
+    margin-left: 40px;
+  }
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (max-width: 900px) {
+
+  .site-header {
+    height: 70px;
+  }
+
+  .header-inner {
+    width: calc(100% - 40px);
+  }
+
+  .header-logo img {
+    width: 175px;
+    height: 45px;
+  }
+
+  .desktop-cv-button {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .header-nav {
+    position: absolute;
+
+    top: 70px;
+    left: 0;
+
+    width: 100%;
+
+    padding: 15px 25px 30px;
+
+    display: flex;
+    flex-direction: column;
+
+    background: #050605;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(244, 184, 0, 0.15);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transform: translateY(-15px);
+
+    pointer-events: none;
+
+    transition:
+      opacity 0.3s ease,
+      visibility 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  .header-nav.menu-open {
+    opacity: 1;
+    visibility: visible;
+
+    transform: translateY(0);
+
+    pointer-events: auto;
+  }
+
+  .nav-links {
+    width: 100%;
+
+    flex-direction: column;
+
+    gap: 0;
+  }
+
+  .nav-link {
+    width: 100%;
+
+    padding: 14px 0;
+
+    justify-content: center;
+
+    font-size: 15px;
+  }
+
+  .mobile-cv-button {
+    display: inline-flex;
+
+    margin-top: 16px;
+
+    min-width: 180px;
+  }
+}
+
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 600px) {
+
+  .header-inner {
+    width: calc(100% - 30px);
+  }
+
+  .header-logo img {
+    width: 150px;
+    height: 42px;
+  }
+
+  .menu-toggle {
+    width: 38px;
+    height: 38px;
+  }
+
+  .menu-toggle span {
+    width: 23px;
+  }
+}
+
+
+/* ========================================
+   SMALL MOBILE
+======================================== */
+
+@media (max-width: 380px) {
+
+  .header-logo img {
+    width: 135px;
+  }
+}

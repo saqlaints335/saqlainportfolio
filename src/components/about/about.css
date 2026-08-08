@@ -1,0 +1,265 @@
+.about-section{
+width:100%;
+position:relative;
+background:#020403;
+border-top:1px solid rgba(255,255,255,.035);
+overflow:hidden;
+}
+
+.about-container{
+width:calc(100% - 80px);
+max-width:1280px;
+margin:0 auto;
+padding:70px 0;
+display:grid;
+grid-template-columns:.9fr 1.35fr;
+align-items:center;
+gap:46px;
+}
+
+.about-image-side{
+position:relative;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.about-image-frame{
+position:relative;
+width:100%;
+max-width:440px;
+height:305px;
+overflow:hidden;
+border-radius:9px;
+border:1px solid rgba(244,184,0,.2);
+background:#080a08;
+box-shadow:0 18px 40px rgba(0,0,0,.24);
+z-index:2;
+}
+
+.about-image-frame::after{
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.13));
+pointer-events:none;
+}
+
+.about-image-frame img{
+width:100%;
+height:100%;
+display:block;
+object-fit:cover;
+object-position:center;
+filter:saturate(.9) contrast(1.04);
+}
+
+.about-dots{
+position:absolute;
+width:42px;
+height:160px;
+background-image:radial-gradient(circle,rgba(244,184,0,.5) 1.2px,transparent 1.5px);
+background-size:10px 10px;
+opacity:.45;
+z-index:1;
+}
+
+.about-dots-left{
+left:-22px;
+top:50%;
+transform:translateY(-50%);
+}
+
+.about-dots-right{
+right:-20px;
+bottom:5px;
+}
+
+.about-content{
+position:relative;
+z-index:2;
+}
+
+.about-label{
+display:block;
+margin-bottom:10px;
+color:var(--accent);
+font-size:14px;
+font-weight:600;
+letter-spacing:.8px;
+}
+
+.about-heading{
+margin:0 0 13px;
+color:#fff;
+font-size:35px;
+line-height:1.15;
+font-weight:600;
+letter-spacing:-.6px;
+}
+
+.about-description{
+max-width:640px;
+margin:0 0 24px;
+color:#aeb2b0;
+font-size:14px;
+line-height:1.75;
+}
+
+.about-info-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:14px;
+}
+
+.about-info-card{
+min-height:128px;
+padding:17px 16px;
+background:linear-gradient(145deg,rgba(255,255,255,.025),rgba(255,255,255,.008));
+border:1px solid rgba(255,255,255,.11);
+border-radius:8px;
+transition:transform .25s ease,border-color .25s ease,background .25s ease;
+}
+
+.about-info-card:hover{
+transform:translateY(-4px);
+border-color:rgba(244,184,0,.38);
+background:rgba(244,184,0,.025);
+}
+
+.about-info-icon{
+width:32px;
+height:32px;
+margin-bottom:10px;
+display:flex;
+align-items:center;
+justify-content:center;
+color:var(--accent);
+}
+
+.about-info-icon svg{
+width:30px;
+height:30px;
+}
+
+.about-info-card h3{
+margin:0 0 4px;
+color:#fff;
+font-size:14px;
+line-height:1.3;
+font-weight:500;
+}
+
+.about-info-card p{
+margin:0;
+color:#a9adab;
+font-size:12px;
+line-height:1.45;
+word-break:break-word;
+}
+
+/* LAPTOP */
+@media(max-width:1050px){
+.about-container{
+width:calc(100% - 50px);
+gap:34px;
+}
+.about-info-grid{
+grid-template-columns:repeat(2,1fr);
+}
+.about-image-frame{
+height:330px;
+}
+}
+
+/* TABLET */
+@media(max-width:800px){
+.about-container{
+width:calc(100% - 40px);
+padding:45px 0;
+grid-template-columns:1fr;
+gap:32px;
+}
+.about-image-frame{
+max-width:620px;
+height:360px;
+}
+.about-content{
+max-width:620px;
+margin:0 auto;
+width:100%;
+}
+.about-heading{
+font-size:32px;
+}
+}
+
+/* MOBILE */
+@media(max-width:600px){
+.about-container{
+width:calc(100% - 30px);
+padding:38px 0;
+gap:26px;
+display:flex;
+flex-direction:column-reverse;
+}
+.about-image-side{
+width:100%;
+}
+.about-content{
+width:100%;
+}
+.about-image-frame{
+width:100%;
+max-width:100%;
+height:280px;
+}
+.about-heading{
+font-size:28px;
+text-align:center;
+}
+.about-description{
+font-size:13px;
+line-height:1.65;
+margin-bottom:20px;
+text-align:center;
+}
+.about-label{
+    text-align:center;
+}
+.about-info-grid{
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+.about-info-card {
+min-height: 115px;
+padding: 14px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+}
+.about-dots{
+display:none;
+}
+}
+
+/* SMALL MOBILE */
+@media(max-width:390px){
+.about-container{
+padding:32px 0;
+gap:22px;
+}
+.about-image-frame{
+height:240px;
+}
+.about-heading{
+font-size:26px;
+}
+.about-info-grid{
+grid-template-columns:1fr;
+}
+.about-info-card{
+min-height:auto;
+}
+}
