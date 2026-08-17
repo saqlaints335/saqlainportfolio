@@ -1,5 +1,5 @@
 import "./ProjectsPage.css";
-import projectImage from "../../assets/images/project.webp";
+import projectImage from "../../assets/images/Project.webp";
 
 const ProjectsPage = () => {
   return (
