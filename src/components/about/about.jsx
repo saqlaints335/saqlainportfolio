@@ -1,5 +1,5 @@
 import "./about.css";
-import aboutImage from "../../assets/images/about.webp";
+import aboutImage from "../../assets/images/About.webp";
 
 const About = () => {
   const infoCards = [
