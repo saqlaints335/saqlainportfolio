@@ -7,7 +7,6 @@ import msOfficeIcon from "../../assets/icons/wordpress.webp";
 import autocadIcon from "../../assets/icons/autocad.webp";
 import graphicsIcon from "../../assets/icons/graphics.webp";
 
-
 const Experience = () => {
   const experiences = [
     {
@@ -54,7 +53,7 @@ const Experience = () => {
   ];
 
   return (
-    <section className="experience-section" id="experience">
+    <section id="experience" className="experience-section">
       <div className="experience-container">
 
         {/* LEFT SIDE */}
@@ -66,7 +65,6 @@ const Experience = () => {
           <div className="experience-timeline">
             {experiences.map((item, index) => (
               <div className="experience-item" key={index}>
-
                 <div className="experience-date">
                   <span className="timeline-dot"></span>
 
@@ -82,23 +80,26 @@ const Experience = () => {
 
                   <p>{item.description}</p>
                 </div>
-
               </div>
             ))}
           </div>
         </div>
 
-
-        {/* RIGHT SIDE */}
-        <div className="experience-skills">
+        {/* RIGHT SIDE - SKILLS */}
+        <div
+          id="skills"
+          className="experience-skills"
+        >
           <span className="experience-section-title">
             SKILLS
           </span>
 
           <div className="experience-skills-grid">
             {skills.map((skill, index) => (
-              <div className="experience-skill-card" key={index}>
-
+              <div
+                className="experience-skill-card"
+                key={index}
+              >
                 <div className="experience-skill-icon">
                   <img
                     src={skill.icon}
@@ -107,7 +108,6 @@ const Experience = () => {
                 </div>
 
                 <h3>{skill.name}</h3>
-
               </div>
             ))}
           </div>
