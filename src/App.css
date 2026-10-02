@@ -1,0 +1,21 @@
+/* =========================================
+   APP LAYOUT
+========================================= */
+/* 
+.site-main {
+  width: 100%;
+  min-height: 100vh;
+  background: var(--bg-primary);
+} */
+ .site-main {
+  width: 100%;
+  background: var(--bg-primary);
+}
+
+#about,
+#experience,
+#projects,
+#skills,
+#contact {
+  min-height: 30px;
+}

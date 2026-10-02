@@ -1,0 +1,88 @@
+/* =========================================
+   PROJECT CARD: full-page preview on hover
+========================================= */
+
+/* The feature image keeps its natural height and is pinned to the top,
+   so the header + hero of the website are what you see first. */
+.project-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transform: translateY(0);
+  transition: transform 0.9s ease;
+  will-change: transform;
+}
+
+/* Normal (short) images keep the small zoom */
+.project-card:hover .project-image img {
+  transform: scale(1.04);
+}
+
+/* Tall screenshots: slide the whole website up slowly, return smoothly */
+.project-card-scroll:hover .project-image img {
+  transform: translateY(calc(var(--scroll-dist) * -1));
+  transition: transform var(--scroll-time) cubic-bezier(0.45, 0, 0.35, 1);
+}
+
+.project-type {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 3px 9px;
+  color: var(--accent);
+  background: rgba(244, 184, 0, 0.07);
+  border: 1px solid rgba(244, 184, 0, 0.22);
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.2px;
+}
+
+.project-bottom-no-demo {
+  justify-content: flex-end;
+}
+
+/* Bigger cards on the All Projects page */
+.projects-page-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.projects-page-grid .project-image {
+  height: 215px;
+}
+
+.projects-page-grid .project-content {
+  padding: 18px 18px 16px;
+}
+
+.projects-page-grid .project-content h3 {
+  font-size: 17px;
+}
+
+.projects-page-grid .project-content p {
+  min-height: 64px;
+  font-size: 13px;
+}
+
+@media (max-width: 1000px) {
+  .projects-page-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .projects-page-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .projects-page-grid .project-image {
+    height: 220px;
+  }
+}
