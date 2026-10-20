@@ -166,7 +166,8 @@ export const SCHEMA = [
           T("type", "Project type", "", { help: "Example: Dental Clinic Website, E-commerce Store" }),
           U("url", "Live website link", "", { help: "Full link starting with https://" }),
           I("image", "Feature image (full-page screenshot works best)", "", {
-            help: "Upload a tall full-page screenshot: on hover the card scrolls the whole page smoothly.",
+            screenshotFrom: "url",
+            help: "Use a TALL full-page screenshot: on hover the card scrolls the whole website inside the card. Click 'Capture full-page screenshot' to take it automatically from the live link.",
           }),
           A("description", "Short description", ""),
           S("platform", "Built with", PLATFORMS, "wordpress"),

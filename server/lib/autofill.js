@@ -304,3 +304,24 @@ export async function autofillFromLink(rawUrl) {
     warnings,
   };
 }
+
+// Only the full-page screenshot (used by "Capture screenshot" on an existing card).
+// No fallback image here: this button exists to get the TALL screenshot.
+export async function captureScreenshot(rawUrl) {
+  const url = normalizeUrl(rawUrl);
+  await assertPublicUrl(url);
+
+  let shot;
+  try {
+    shot = await takeScreenshot(url);
+  } catch (err) {
+    throw new HttpError(502, `${err.message}`);
+  }
+  if (!shot.screenshotUrl) throw new HttpError(502, "The screenshot service did not return an image.");
+
+  try {
+    return { image: await storeImage(shot.screenshotUrl) };
+  } catch (err) {
+    throw new HttpError(502, `Could not save the screenshot (${err.message}).`);
+  }
+}

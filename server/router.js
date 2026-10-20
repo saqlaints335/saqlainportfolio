@@ -11,7 +11,7 @@ import {
   clearFailures,
 } from "./lib/auth.js";
 import { readContent, writeContent, saveFile } from "./lib/storage.js";
-import { autofillFromLink } from "./lib/autofill.js";
+import { autofillFromLink, captureScreenshot } from "./lib/autofill.js";
 
 const MAX_UPLOAD = 4 * 1024 * 1024; // Vercel functions accept up to ~4.5 MB
 
@@ -35,9 +35,7 @@ async function getStoredContent() {
 export default async function handler(req, res) {
   try {
     const url = new URL(req.url, "http://localhost");
-    let route = url.pathname.replace(/^\/api\/?/, "").replace(/\/+$/, "");
-    // When Vercel rewrites /api/xyz to /api/index?path=xyz, read the real route from the query
-    if (route === "index" || route === "") route = (url.searchParams.get("path") || "").replace(/^\/+|\/+$/g, "");
+    const route = url.pathname.replace(/^\/api\/?/, "").replace(/\/+$/, "");
     const method = req.method;
 
     // ---------- PUBLIC ----------
@@ -117,6 +115,11 @@ export default async function handler(req, res) {
         const { url: link = "" } = await readJson(req, 10_000);
         const result = await autofillFromLink(link);
         return send(res, 200, result, { "Cache-Control": "no-store" });
+      }
+
+      if (route === "admin/screenshot" && method === "POST") {
+        const { url: link = "" } = await readJson(req, 10_000);
+        return send(res, 200, await captureScreenshot(link), { "Cache-Control": "no-store" });
       }
 
       if (route === "admin/upload" && method === "POST") {

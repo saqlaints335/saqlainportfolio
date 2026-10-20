@@ -83,10 +83,34 @@ const useForm = () => useContext(FormContext);
 // Fields
 // ---------------------------------------------------------------
 function FileField({ field, path, value }) {
-  const { set } = useForm();
+  const { set, get } = useForm();
   const inputRef = useRef(null);
   const [busy, setBusy] = useState(false);
+  const [capturing, setCapturing] = useState(false);
   const [error, setError] = useState("");
+
+  // Takes a tall full-page screenshot of the live website (link field of the same card)
+  const capture = async () => {
+    const link = get([...path.slice(0, -1), field.screenshotFrom]);
+    if (!link) {
+      setError("Please fill in the Live website link first.");
+      return;
+    }
+    setCapturing(true);
+    setError("");
+    try {
+      const data = await api("/api/admin/screenshot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: link }),
+      });
+      set(path, data.image);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setCapturing(false);
+    }
+  };
 
   const isImage = field.type === "image";
 
@@ -126,7 +150,13 @@ function FileField({ field, path, value }) {
         )}
 
         <div className="adm-row">
-          <button type="button" className="adm-btn adm-btn-small" onClick={() => inputRef.current.click()} disabled={busy}>
+          {field.screenshotFrom && (
+            <button type="button" className="adm-btn adm-btn-small adm-btn-primary" onClick={capture} disabled={capturing || busy}>
+              {capturing ? "Capturing (up to 40 sec)..." : "Capture full-page screenshot"}
+            </button>
+          )}
+
+          <button type="button" className="adm-btn adm-btn-small" onClick={() => inputRef.current.click()} disabled={busy || capturing}>
             {busy ? "Uploading..." : isImage ? "Upload image" : "Upload PDF"}
           </button>
 
@@ -224,11 +254,11 @@ function QuickAdd({ onCreate }) {
 
 // "Fill from link" for an existing card: only empty fields are filled
 function FillFromLink({ url, onFill }) {
-  const [busy, setBusy] = useState("");
+  const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
 
-  const run = async (replaceImage) => {
-    setBusy(replaceImage ? "shot" : "fill");
+  const run = async () => {
+    setBusy(true);
     setMsg("");
     try {
       const data = await api("/api/admin/autofill", {
@@ -236,27 +266,19 @@ function FillFromLink({ url, onFill }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
       });
-      onFill(data, replaceImage);
-      const notes = (data.warnings || []).join(" ");
-      if (replaceImage) {
-        setMsg(data.image ? `Screenshot replaced. Click Save changes. ${notes}` : `Could not get a new screenshot, the old image was kept. ${notes}`);
-      } else {
-        setMsg(["Empty fields were filled.", notes].join(" "));
-      }
+      onFill(data);
+      setMsg(["Empty fields were filled.", ...(data.warnings || [])].join(" "));
     } catch (err) {
       setMsg(err.message);
     } finally {
-      setBusy("");
+      setBusy(false);
     }
   };
 
   return (
     <div className="adm-fill">
-      <button type="button" className="adm-btn adm-btn-small" onClick={() => run(false)} disabled={!!busy || !url}>
-        {busy === "fill" ? "Working..." : "Fill empty fields from link"}
-      </button>{" "}
-      <button type="button" className="adm-btn adm-btn-small" onClick={() => run(true)} disabled={!!busy || !url}>
-        {busy === "shot" ? "Taking screenshot (up to 40 sec)..." : "Replace image with full-page screenshot"}
+      <button type="button" className="adm-btn adm-btn-small" onClick={run} disabled={busy || !url}>
+        {busy ? "Working..." : "Fill empty fields from link"}
       </button>
       {msg && <p className="adm-help">{msg}</p>}
     </div>
@@ -308,7 +330,7 @@ function ListField({ field, path, value }) {
     setOpen(items.length);
   };
 
-  const fillItem = (i, data, replaceImage = false) =>
+  const fillItem = (i, data) =>
     update(path, (list) =>
       list.map((item, idx) =>
         idx !== i
@@ -318,8 +340,7 @@ function ListField({ field, path, value }) {
               title: item.title || data.title,
               type: item.type || data.type,
               description: item.description || data.description,
-              // "Replace image" swaps the old picture; otherwise only an empty image is filled
-              image: replaceImage ? data.image || item.image : item.image || data.image,
+              image: item.image || data.image,
             }
       )
     );
@@ -353,7 +374,7 @@ function ListField({ field, path, value }) {
 
             {expanded && (
               <div className="adm-item-body">
-                {field.quickAdd && <FillFromLink url={item.url} onFill={(data, replaceImage) => fillItem(i, data, replaceImage)} />}
+                {field.quickAdd && <FillFromLink url={item.url} onFill={(data) => fillItem(i, data)} />}
 
                 {field.itemFields.map((sub) => (
                   <Field key={sub.key} field={sub} path={[...path, i, sub.key]} value={item[sub.key]} />
@@ -549,6 +570,10 @@ function Dashboard({ onLoggedOut }) {
     return () => window.removeEventListener("beforeunload", warn);
   }, [dirty]);
 
+  const draftRef = useRef(null);
+  draftRef.current = draft;
+  const get = useCallback((path) => getIn(draftRef.current, path), []);
+
   const set = useCallback((path, value) => setDraft((prev) => setIn(prev, path, value)), []);
   const update = useCallback(
     (path, fn) => setDraft((prev) => setIn(prev, path, fn(getIn(prev, path)))),
@@ -608,7 +633,7 @@ function Dashboard({ onLoggedOut }) {
   const group = SCHEMA.find((g) => g.id === activeId);
 
   return (
-    <FormContext.Provider value={{ set, update }}>
+    <FormContext.Provider value={{ set, update, get }}>
       <div className="adm-shell">
         <header className="adm-top">
           <div className="adm-brand">

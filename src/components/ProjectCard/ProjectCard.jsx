@@ -52,12 +52,6 @@ const ProjectCard = ({ project, liveText = "View Live" }) => {
     return () => observer.disconnect();
   }, [measure]);
 
-  // Image may already be loaded (cache) before React attaches onLoad
-  useEffect(() => {
-    const img = imgRef.current;
-    if (img && img.complete) measure();
-  }, [measure, project.image]);
-
   const scrolls = distance > 8;
   const seconds = Math.min(12, Math.max(3, distance / 130));
 

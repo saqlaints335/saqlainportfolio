@@ -379,3 +379,9 @@ padding:44px 0 60px;
 width:calc(100% - 40px);
 }
 }
+
+/* Infinite scroll loading indicator */
+.projects-infinite-loader { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 32px 0; color: inherit; font-size: 14px; }
+.projects-infinite-spinner { width: 22px; height: 22px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: projects-infinite-spin .75s linear infinite; }
+@keyframes projects-infinite-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .projects-infinite-spinner { animation: none; } }

@@ -41,6 +41,15 @@
     />
     <meta name="twitter:image" content="__SITE_URL__/og-image.jpg" />
 
+    <!-- Dark page from the first paint, so nothing flashes while the site loads -->
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #020403;
+      }
+    </style>
+
     <!-- Fonts (faster than CSS @import) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -95,8 +104,10 @@
     </script>
   </head>
   <body>
-    <div id="root">
-      <!-- Shown to search engines / before JavaScript loads. React replaces it. -->
+    <div id="root"></div>
+
+    <!-- Only shown when JavaScript is off (search bots / old browsers). Normal visitors never see it. -->
+    <noscript>
       <main style="padding:24px;color:#fff;font-family:sans-serif;max-width:720px">
         <h1>Muhammad Saqlain Hashim - WordPress &amp; Web Developer</h1>
         <p>
@@ -111,7 +122,7 @@
           <a href="/#contact" style="color:#f4b800">Contact</a>
         </nav>
       </main>
-    </div>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

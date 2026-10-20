@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import "./ProjectsPage.css";
 import useContent from "../../content/useContent";
 import { fmt } from "../../content/format";
@@ -5,6 +6,26 @@ import ProjectCard from "../ProjectCard/ProjectCard";
 
 const ProjectsPage = () => {
   const { projectsPage: page, projects, general } = useContent();
+  const [visibleCount, setVisibleCount] = useState(12);
+  const loadMoreRef = useRef(null);
+  const totalProjects = projects.items.length;
+
+  useEffect(() => {
+    const target = loadMoreRef.current;
+    if (!target || visibleCount >= totalProjects) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setVisibleCount((count) => Math.min(count + 12, totalProjects));
+        }
+      },
+      { rootMargin: "0px 0px 300px 0px", threshold: 0 }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [visibleCount, totalProjects]);
 
   return (
     <>
@@ -181,7 +202,7 @@ const ProjectsPage = () => {
 
         {projects.items.length > 0 ? (
           <div className="projects-page-grid">
-            {projects.items.map((project, index) => (
+            {projects.items.slice(0, visibleCount).map((project, index) => (
               <ProjectCard
                 key={`${project.title}-${index}`}
                 project={project}
@@ -191,6 +212,18 @@ const ProjectsPage = () => {
           </div>
         ) : (
           <p className="projects-all-text">{page.emptyText}</p>
+        )}
+
+        {visibleCount < totalProjects && (
+          <div
+            ref={loadMoreRef}
+            className="projects-infinite-loader"
+            role="status"
+            aria-live="polite"
+          >
+            <span className="projects-infinite-spinner" aria-hidden="true" />
+            <span>Loading more projects...</span>
+          </div>
         )}
 
       </div>

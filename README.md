@@ -29,7 +29,7 @@ Admin panel address: `https://your-domain.com/wp-admin`
      It fills the name, type (WooCommerce Store or Service Website), a short description taken from the website itself,
      and a full-page screenshot. Check it, edit if you like, then Save.
   2. **+ Add project**: fill everything by hand.
-  Inside each card, *Fill empty fields from link* completes only the missing fields.
+  Inside each card, *Fill empty fields from link* completes only the missing fields. *Capture full-page screenshot* (next to the image) replaces it with a fresh tall screenshot of the live link.
 - **Screenshots** come from the free Microlink service (about 25-50 per day, no key needed). If a site blocks it, you get a
   message and can upload the screenshot manually. Optional: `MICROLINK_API_KEY` for more.
 - **Feature image**: upload a TALL full-page screenshot of the website. On hover the card scrolls the whole page smoothly.
