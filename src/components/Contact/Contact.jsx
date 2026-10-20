@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
 import "./Contact.css";
 import useContent from "../../content/useContent";
 import { telLink } from "../../content/format";
-import { getCountries } from "../../data/countries";
+import { getCountries, getCurrency, flagSrc, flagSrcSet } from "../../data/countries";
 
 const emptyForm = {
   name: "",
@@ -12,6 +12,83 @@ const emptyForm = {
   budget: "",
   subject: "",
   message: "",
+};
+
+// Dropdown that shows the flag next to every country name
+const CountrySelect = ({ countries, value, onChange, placeholder }) => {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const boxRef = useRef(null);
+  const selected = countries.find((c) => c.name === value);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const close = (e) => {
+      if (boxRef.current && !boxRef.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", close);
+    document.addEventListener("touchstart", close);
+    return () => {
+      document.removeEventListener("mousedown", close);
+      document.removeEventListener("touchstart", close);
+    };
+  }, [open]);
+
+  const list = query.trim()
+    ? countries.filter((c) => c.name.toLowerCase().includes(query.trim().toLowerCase()))
+    : countries;
+
+  const pick = (country) => {
+    onChange(country);
+    setOpen(false);
+    setQuery("");
+  };
+
+  return (
+    <div className="country-select" ref={boxRef}>
+      <button
+        type="button"
+        className={`country-trigger ${selected ? "" : "is-placeholder"}`}
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+      >
+        {selected && <img src={flagSrc(selected.code)} srcSet={flagSrcSet(selected.code)} alt="" width="20" height="15" />}
+        <span>{selected ? selected.name : placeholder}</span>
+      </button>
+
+      {/* keeps the browser's "required" check working */}
+      <input className="country-required" tabIndex={-1} value={value} onChange={() => {}} required aria-hidden="true" />
+
+      {open && (
+        <div className="country-menu">
+          <input
+            type="text"
+            className="country-search"
+            placeholder="Search country..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            autoFocus
+          />
+          <ul role="listbox">
+            {list.map((country) => (
+              <li
+                key={country.code}
+                role="option"
+                aria-selected={country.name === value}
+                className={country.name === value ? "is-selected" : ""}
+                onClick={() => pick(country)}
+              >
+                <img src={flagSrc(country.code)} srcSet={flagSrcSet(country.code)} alt="" width="20" height="15" loading="lazy" />
+                <span>{country.name}</span>
+              </li>
+            ))}
+            {list.length === 0 && <li className="country-empty">No country found</li>}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
 };
 
 const Contact = () => {
@@ -39,6 +116,21 @@ const Contact = () => {
       alive = false;
     };
   }, [countries]);
+
+  // Currency follows the selected country (Pakistan = PKR, United States = USD ...)
+  const selectedCountry = countries.find((c) => c.name === formData.country);
+  const currency = selectedCountry ? getCurrency(selectedCountry.code) : null;
+  const budgetText = formData.budget && currency ? `${currency.code} ${formData.budget}` : "Not specified";
+
+  const handleCountry = (country) => {
+    setFormData((prev) => ({ ...prev, country: country.name }));
+  };
+
+  const handleBudget = (e) => {
+    // numbers only (a decimal point is allowed), no normal text
+    const cleaned = e.target.value.replace(/[^\d.]/g, "").replace(/(\..*)\./g, "$1");
+    setFormData((prev) => ({ ...prev, budget: cleaned }));
+  };
 
   const [status, setStatus] = useState({
     loading: false,
@@ -72,11 +164,11 @@ const Contact = () => {
           name: formData.name,
           email: formData.email,
           country: formData.country,
-          budget: formData.budget || "Not specified",
+          budget: budgetText,
           subject: formData.subject,
           // Country and budget are also added to the message,
           // so they arrive even if the EmailJS template has no {{country}} / {{budget}}.
-          message: `${formData.message}\n\n---\nCountry: ${formData.country}\nBudget: ${formData.budget || "Not specified"}`,
+          message: `${formData.message}\n\n---\nCountry: ${formData.country}\nBudget: ${budgetText}`,
         },
         {
           publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
@@ -242,35 +334,30 @@ const Contact = () => {
             <div className="contact-form-row">
 
               <div className="contact-field">
-                <select
-                  name="country"
+                <CountrySelect
+                  countries={countries}
                   value={formData.country}
-                  onChange={handleChange}
-                  required
-                  aria-label={contact.countryPlaceholder}
-                  className={formData.country ? "" : "is-placeholder"}
-                >
-                  <option value="" disabled>
-                    {contact.countryPlaceholder}
-                  </option>
-
-                  {countries.map((country) => (
-                    <option key={country.code} value={country.name}>
-                      {country.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={handleCountry}
+                  placeholder={contact.countryPlaceholder}
+                />
               </div>
 
               <div className="contact-field">
-                <input
-                  type="text"
-                  name="budget"
-                  placeholder={contact.budgetPlaceholder}
-                  value={formData.budget}
-                  onChange={handleChange}
-                  maxLength={60}
-                />
+                <div className="budget-field">
+                  <span className="budget-currency" title={currency ? currency.code : ""}>
+                    {currency ? (currency.symbol === currency.code ? currency.code : `${currency.symbol} ${currency.code}`) : "$"}
+                  </span>
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    name="budget"
+                    placeholder={currency ? "Your budget (e.g. 500)" : "Select country first"}
+                    value={formData.budget}
+                    onChange={handleBudget}
+                    disabled={!currency}
+                    maxLength={14}
+                  />
+                </div>
               </div>
 
             </div>
